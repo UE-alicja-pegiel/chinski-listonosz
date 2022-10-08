@@ -1,4 +1,8 @@
 # Problem Chińskiego Listonosza
 ## Autorzy:
-<p>Alicja Pęgiel<br>
-Rafał Stasiowski</p>
+Rafał Stasiowski:<br>
+1. Wygenerowanie punktów
+2. Utworzenie grafu, który ma cykl Eulera
+Alicja Pęgiel<br>
+3. Implementacja algorytmu
+4. Wizualizacja
