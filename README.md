@@ -1,4 +1,4 @@
 # Problem Chińskiego Listonosza
 ## Autorzy:
-### Alicja Pęgiel
-### Rafał Stasiowski
+Alicja Pęgiel
+Rafał Stasiowski
