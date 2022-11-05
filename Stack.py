@@ -3,6 +3,7 @@ class _Node:
         self.data = item
         self.next = None
 
+
 class Stack:
     def __init__(self):
         self._head = None
