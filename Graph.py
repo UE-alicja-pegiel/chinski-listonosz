@@ -23,12 +23,12 @@ class Graph:
 
     def create_edge(self, head_vertex: Vertex, tail_vertex: Vertex, cost):
         self.edges.append(Edge(head_vertex, tail_vertex, cost))
-        head_vertex.increase_degree()
-        tail_vertex.increase_degree()
+        head_vertex.increase_degree(tail_vertex)
+        tail_vertex.increase_degree(head_vertex)
 
     def delete_edge(self, edge: Edge):
-        edge.head.decrease_degree()
-        edge.tail.decrease_degree()
+        edge.head.decrease_degree(edge.tail)
+        edge.tail.decrease_degree(edge.head)
         self.edges.remove(edge)
 
     def check_if_graph_valid(self):
@@ -37,27 +37,21 @@ class Graph:
                 return False
         return True
 
-    def select_random_vertex(self):
-        return self.vertices[random.randrange(len(self.vertices))]
-
-    def check_if_already_exist(self, vertex_head, vertex_tail):
-        for edge in self.edges:
-            if (edge.tail == vertex_head and edge.head == vertex_tail) \
-                    and not (edge.tail == vertex_tail and edge.tail == vertex_head):
-                return True
-        return False
-
-    def select_different_vertex(self, vertex):
-        vertex_tail = self.select_random_vertex()
-        while vertex == vertex_tail and not self.check_if_already_exist(vertex_head=vertex, vertex_tail=vertex_tail):
-            vertex_tail = self.select_random_vertex()
-        return vertex_tail
+    def sort_by_degree(self):
+        self.vertices.sort(key=lambda x: x.degree, reverse=True)
 
     def generate_graph(self):
         while not self.check_if_graph_valid():
-            for vertex in self.vertices:
-                vertex_tail = self.select_different_vertex(vertex)
-                self.create_edge(vertex, vertex_tail, (random.randrange(19)) + 1)
+            self.sort_by_degree()
+            cost = random.randrange(self.n - 1) + 1
+            # for s in self.vertices:
+            #     print(s)
+            # print("-------------------")
+            this_vertex = self.vertices[-1]
+            different_vertex = self.select_different_vertex(this_vertex)
+            self.create_edge(head_vertex=self.vertices[-1],
+                             tail_vertex=different_vertex,
+                             cost=cost)
 
     def print_edges(self):
         for edge in self.edges:
@@ -67,6 +61,15 @@ class Graph:
         for vertex in self.vertices:
             print(str(vertex) + " " + str(vertex.degree))
 
+    def select_different_vertex(self, this_vertex):
+        vertex_tail = self.select_random_vertex()
+        while this_vertex.check_connection(vertex_tail) and vertex_tail != this_vertex:
+            vertex_tail = self.select_random_vertex()
+        return vertex_tail
+
+    def select_random_vertex(self):
+        return self.vertices[random.randrange(len(self.vertices))]
+
     def print_duplicate_edges(self):
         duplicated = []
         for edge in self.edges:
@@ -74,7 +77,8 @@ class Graph:
                 if edge == edge2:
                     continue
                 if (edge.tail == edge2.tail and edge.head == edge2.head) \
-                        or (edge.tail == edge2.head and edge.head == edge2.tail) and edge2 not in duplicated:
+                        or (edge.tail == edge2.head and edge.head == edge2.tail) \
+                        and edge2 not in duplicated:
                     print(edge)
                     duplicated.append(edge)
                     duplicated.append(edge2)
