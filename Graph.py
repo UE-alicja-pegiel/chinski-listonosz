@@ -44,9 +44,6 @@ class Graph:
         while not self.check_if_graph_valid():
             self.sort_by_degree()
             cost = random.randrange(self.n - 1) + 1
-            # for s in self.vertices:
-            #     print(s)
-            # print("-------------------")
             this_vertex = self.vertices[-1]
             different_vertex = self.select_different_vertex(this_vertex)
             self.create_edge(head_vertex=self.vertices[-1],
@@ -70,15 +67,3 @@ class Graph:
     def select_random_vertex(self):
         return self.vertices[random.randrange(len(self.vertices))]
 
-    def print_duplicate_edges(self):
-        duplicated = []
-        for edge in self.edges:
-            for edge2 in self.edges:
-                if edge == edge2:
-                    continue
-                if (edge.tail == edge2.tail and edge.head == edge2.head) \
-                        or (edge.tail == edge2.head and edge.head == edge2.tail) \
-                        and edge2 not in duplicated:
-                    print(edge)
-                    duplicated.append(edge)
-                    duplicated.append(edge2)
