@@ -66,4 +66,3 @@ class Graph:
 
     def select_random_vertex(self):
         return self.vertices[random.randrange(len(self.vertices))]
-

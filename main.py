@@ -1,5 +1,6 @@
+from Fleury import Fleury
 from Graph import Graph
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 graph = Graph(size_x=100, size_y=100, n=10)
 
@@ -42,3 +43,6 @@ for edge in graph.edges:
     alpha += 0.05
 
 plt.show()
+
+fleury = Fleury(graph)
+fleury.fleury(fleury.find_start())
