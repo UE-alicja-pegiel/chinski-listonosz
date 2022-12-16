@@ -28,6 +28,14 @@ class Graph:
                 return True
         return False
 
+    def weights(self):
+        weight = []
+        w_sum = 0
+        for edge in self.edges:
+            w_sum += edge.cost
+            weight.append(w_sum)
+        return weight
+
     def create_edge(self, head_vertex: Vertex, tail_vertex: Vertex, cost):
         if head_vertex != tail_vertex and not self.edge_exists(head_vertex, tail_vertex):
             self.edges.append(Edge(head_vertex, tail_vertex, cost))
