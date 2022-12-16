@@ -2,45 +2,7 @@ class Fleury:
 
     def __init__(self, graph):
         self.graph = graph
-
-    def find_all_paths(self, start, end, path=None):
-        """
-        :param start: starting vertex
-        :param end: end vertex
-        :param path: path from one vertex to another
-        :return: list of paths
-        """
-        if path is None:
-            path = []
-        path = path + [start]
-        if start == end:
-            return [path]
-        paths = []
-        for vertex in start.connected_vertices:
-            if vertex not in path:
-                newpaths = self.find_all_paths(vertex, end, path)
-                for newpath in newpaths:
-                    paths.append(newpath)
-        return paths
-
-    def reachable_vertices(self, vertex):
-        """
-        :param vertex: chosen vertex
-        :return: all reachable vertices from the vertex
-        """
-        vertices = set()
-        if vertex == self.graph.vertices[-1]:
-            paths = self.find_all_paths(vertex, self.graph.vertices[-2])
-            for path in paths:
-                for v in range(len(path)):
-                    vertices.add(path[v])
-            return vertices
-        else:
-            paths = self.find_all_paths(vertex, self.graph.vertices[-1])
-            for path in paths:
-                for v in range(len(path)):
-                    vertices.add(path[v])
-            return vertices
+        self.euler_tour = []
 
     def find_start(self):
         """
@@ -51,26 +13,22 @@ class Fleury:
                 return v
         return self.graph.vertices[0]
 
-    def is_bridge(self, edge):
-        """
-        :param edge: edge of a graph
-        :return: boolean statement if edge is a bridge or not
-        """
-        if len(edge.head.connected_vertices) == 1:
-            return False
-        else:
-            head = edge.head
-            tail = edge.tail
-            cost = edge.cost
-            count1 = len(self.reachable_vertices(edge.head))
-            self.graph.delete_edge(edge)
-            count2 = len(self.reachable_vertices(edge.head))
-            self.graph.create_edge(head, tail, cost)
-            return True if count1 > count2 else False
+    def is_bridge(self, vertex):
+        return vertex.degree == 1
 
-    def euler_tour(self, u):
-        euler = []
-        for e in self.graph.edges:
-            if not self.is_bridge(e):
-                euler.append(e)
-        return euler
+    def find_cost(self, start, end):
+        for edge in self.graph.edges:
+            if (edge.head == start and edge.tail == end) or (edge.head == end and edge.tail == start):
+                return edge.cost
+        return 0
+
+    def fleury(self, start_vertex):
+        edge_count = len(self.graph.edges)
+        while edge_count > 0:
+            for v in start_vertex.connected_vertices:
+                if not self.is_bridge(v):
+                    self.euler_tour.append((start_vertex, v, self.find_cost(start_vertex, v)))
+                    self.graph.delete_edge_vert(start_vertex, v)
+                    self.fleury(v)
+            edge_count -= 1
+        return self.euler_tour

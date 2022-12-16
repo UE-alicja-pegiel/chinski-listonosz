@@ -21,8 +21,15 @@ class Graph:
             idn = "vertex" + str(i)
             self.vertices.append(Vertex(x, y, idn))
 
+    def edge_exists(self, head_vertex: Vertex, tail_vertex: Vertex):
+        for edge in self.edges:
+            if (edge.head == head_vertex and edge.tail == tail_vertex) or (edge.head == tail_vertex and edge.tail ==
+                                                                           head_vertex):
+                return True
+        return False
+
     def create_edge(self, head_vertex: Vertex, tail_vertex: Vertex, cost):
-        if head_vertex != tail_vertex:
+        if head_vertex != tail_vertex and not self.edge_exists(head_vertex, tail_vertex):
             self.edges.append(Edge(head_vertex, tail_vertex, cost))
             head_vertex.increase_degree(tail_vertex)
             tail_vertex.increase_degree(head_vertex)
@@ -31,6 +38,14 @@ class Graph:
         edge.head.decrease_degree(edge.tail)
         edge.tail.decrease_degree(edge.head)
         self.edges.remove(edge)
+
+    def delete_edge_vert(self, head_vertex: Vertex, tail_vertex: Vertex):
+        for edge in self.edges:
+            if edge.head == head_vertex and edge.tail == tail_vertex:
+                edge.head.decrease_degree(edge.tail)
+                edge.tail.decrease_degree(edge.head)
+                self.edges.remove(edge)
+                break
 
     def check_if_graph_valid(self):
         for vertex in self.vertices:
@@ -57,16 +72,13 @@ class Graph:
         Eulerian will have all even vertices, semi-Eulerian will have exactly two odd vertices.
         :return: boolean statement
         """
-        count_even = 0
         count_odd = 0
         for vertex in self.vertices:
-            if vertex.degree % 2 == 0:
-                count_even += 1
-            else:
+            if vertex.degree % 2 != 0:
                 count_odd += 1
         if count_odd == 2:
             return True
-        if count_even == len(self.vertices):
+        if count_odd == 0:
             return True
         return False
 
